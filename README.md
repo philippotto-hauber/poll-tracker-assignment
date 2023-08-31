@@ -14,6 +14,7 @@ Scrape, clean poll data and calculate trends
 - add logging in each "section" of the code with try and except (see [here](https://medium.com/@rahulkumar_33287/logger-error-versus-logger-exception-4113b39beb4b))
 - move functions like loading data, calculating trends etc. to separate file
 - consider repeating values rather than interpolating -> this may be more appropriate for when there is a longer break in polling
+- separate script to generate graph plot_trends.png -> currently still in dev script
 
 
 
