@@ -16,6 +16,7 @@ Scrape, clean poll data and calculate trends
 - consider repeating values rather than interpolating -> this may be more appropriate for when there is a longer break in polling
 - separate script to generate graph plot_trends.png -> currently still in dev script
 - pipenv
+- docstring
 
 
 
