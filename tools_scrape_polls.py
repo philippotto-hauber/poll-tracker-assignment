@@ -21,8 +21,6 @@ def plot_trends_polls(df_trends, df_data, names_candidates):
         if col in names_candidates:
             ax.plot(df_trends['Date'], df_trends[col], color = colors_plot[counter_colors],
                     label = col, linestyle = 'solid', linewidth=2)
-            # ax.plot(df_data['Date'], df_data[col],
-            #         linestyle = 'solid', linewidth=0.5, color = 'blue')
             ax.scatter(df_data['Date'], df_data[col], 
                     marker='o', s = 12, alpha = 0.5, color = colors_plot[counter_colors])
             counter_colors += 1
