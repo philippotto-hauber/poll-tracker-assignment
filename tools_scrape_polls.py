@@ -12,7 +12,7 @@ def scrape_table(url):
 
 # function to calculate trend
 
-# function to plot trends and polls
+# function to plot trends and polls -> only for dev purposes
 def plot_trends_polls(df_trends, df_data, names_candidates):
     fig, ax = plt.subplots()
     colors_plot = ['blue', 'red', 'green', 'orange', 'purple', 'brown']
