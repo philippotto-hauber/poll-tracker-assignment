@@ -6,7 +6,7 @@ Scrape, clean poll data and calculate trends
 - ~~reverse order for polls (latest polls first)~~
 - ~~change column names before saving to csv~~
 - function to export data to csv
-- try date-based rolling average
+- try date-based rolling average, i.e. 7-day window not 7 observations
 - scrape footnotes as well
 - ~~deal with footnotes in polls~~
 - ~~check if shares sum to 1, else remove~~
