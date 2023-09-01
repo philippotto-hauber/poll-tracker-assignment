@@ -34,9 +34,6 @@ for row in table.find_all("tr"):
 
 df_rawdata = pd.DataFrame(rawdata)
 
-# # sort df_rawdata by index in reverse order and reset index
-# df_rawdata = df_rawdata.sort_index(ascending=False).reset_index(drop=True)
-
 # remove footnotes
 for f in footnotes:
     df_rawdata.replace(f, '')
@@ -45,6 +42,7 @@ for f in footnotes:
 df_data = df_rawdata.copy()
 df_data['Date'] = pd.to_datetime(df_data['Date'])
 
+# re -> all numbers, nothing else! [0-9]
 df_data['Sample'] = pd.to_numeric(df_data['Sample'].str.replace(',', ''), errors='coerce').astype('Int64') # replacing , if possible; float to int
 
 for col in df_data.columns:
