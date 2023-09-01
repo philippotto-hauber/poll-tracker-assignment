@@ -58,9 +58,6 @@ df_data_excluded = df_data.loc[drop_row, :] # only for dev purposes
 df_data = df_data.loc[~drop_row, :]
 logging.warning('Excluded {} rows because of possible data entry errors: sum of vote shares larger (smaller) than 1.01 (0.99).'.format(drop_row.sum()))
 
-# sort data by date
-df_data = df_data.sort_values(by='Date').reset_index(drop=True)
-
 df_data.head()
 df_data.dtypes
 df_data.info(show_counts=True)
@@ -90,9 +87,6 @@ plot_trends_polls(df_trends, df_data, names_candidates)
 # rename columns of df_data and df_trends date, pollster, n 
 df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
 df_trends = df_trends.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
-
-# reverse order of polls (latest first)
-df_data = df_data.sort_index(ascending=False).reset_index(drop=True)
 
 # write to csv
 df_data.to_csv('polls.csv', index=False)
