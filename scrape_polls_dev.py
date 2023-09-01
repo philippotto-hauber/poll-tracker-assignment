@@ -63,20 +63,10 @@ df_data.dtypes
 df_data.info(show_counts=True)
 
 #%% calculate trends
-
-# create a copy of the data frame to store the trends
-df_trends = df_data.copy()
-
-# for each candidate, replace the values in df_trends with a  rolling average interpolate missing values with linear interpolation
-k = 7
-for col in df_trends.columns:
-    if col not in ['Date', 'Sample', 'Pollster']:
-        df_trends[col] = df_trends[col].interpolate(method='linear', limit_direction='both').rolling(k).mean()
-
-df_trends_backup = df_trends.copy()
-
-# overwrite trend of Others with 1 - sum of trends of all candidates
-df_trends['Others'] = 1 - df_trends.loc[:, names_candidates].sum(axis=1, skipna=False)
+df_trends = calculate_trends(df_data, 
+                             names_candidates,
+                             k_days= '7D',
+                             method_interpolate='linear')
 
 # %% plot trends (only for dev purposes)
 
@@ -84,13 +74,13 @@ plot_trends_polls(df_trends, df_data, names_candidates)
 
 #%% export to csv
 
-# rename columns of df_data and df_trends date, pollster, n 
+# rename columns to bring in line with the example files
 df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
-df_trends = df_trends.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
+df_trends.index.name = 'date'
 
 # write to csv
 df_data.to_csv('polls.csv', index=False)
-df_trends.to_csv('trends.csv', index=False)
+df_trends.to_csv('trends.csv', index=True) # date is index!
 
 #%% To-Dos
 
@@ -103,4 +93,6 @@ df_trends.to_csv('trends.csv', index=False)
 # move functions like loading data, calculating trends etc. to separate file
 
 
+# rename index of df_trends to date
+# 
 
