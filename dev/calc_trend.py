@@ -17,11 +17,13 @@ df_data['Date'] = pd.to_datetime(df_data['Date'])
 
 names_candidates = [col for col in df_data.columns if col not in ['Date', 'Pollster', 'Sample', 'Others']]
 
+#df_trends = calculate_trends(df_data,names_candidates)
+
 # resample df_data to daily frequency taking the mean over days
 df_data_resampled = df_data.set_index('Date').resample('D').mean()
 
 # drop Sample from df_data_resampled as it is not needed for the trend calculations
-df_data = df_data.drop(columns=['Sample'])
+df_data_resampled = df_data_resampled.drop(columns=['Sample'])
 
 if method_interpolate == 'linear':
     df_data_interpolated = df_data_resampled.interpolate(method='linear', limit_direction='both')
