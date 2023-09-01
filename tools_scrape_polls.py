@@ -13,7 +13,10 @@ def scrape_table(url):
     return table
 
 # function to calculate trend
-def calculate_trends(df_data, names_candidates, k_days = '7D', method_interpolate = 'linear'):
+def calculate_trends(df_data, 
+                     names_candidates, 
+                     k_days = '7D', 
+                     method_interpolate = 'linear'):
     """Calculate trend vote shares based on poll results
 
     Parameters:
@@ -27,7 +30,7 @@ def calculate_trends(df_data, names_candidates, k_days = '7D', method_interpolat
 
    """
     # resample df_data to daily frequency taking the mean over days
-    df_trends = df_data.set_index('Date').resample('D').mean().reset_index()
+    df_trends = df_data.set_index('Date').resample('D').mean()
 
     # 'Sample' is not needed for the trend calculations
     df_trends = df_trends.drop(columns=['Sample'])
@@ -42,11 +45,12 @@ def calculate_trends(df_data, names_candidates, k_days = '7D', method_interpolat
         #raise ValueError('method_interpolate must be either linear or pad')
     
     # calculate k_days rolling average
-    df_trends = df_trends.rolling(window=k_days).mean()
+    df_trends = df_trends.rolling(window=k_days, on = df_trends.index).mean()
 
     # overwrite trend of Others with 1 - sum of trends of all candidates
     df_trends['Others'] = 1 - df_trends.loc[:, names_candidates].sum(axis=1, skipna=False)
 
+    return df_trends
 
 # function to plot trends and polls -> only for dev purposes
 def plot_trends_polls(df_trends, df_data, names_candidates, ylim = [-0.05, 0.6]):
