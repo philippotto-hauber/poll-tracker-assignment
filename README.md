@@ -11,12 +11,20 @@ Scrape, clean poll data and calculate trends
 - ~~deal with footnotes in polls~~
 - ~~check if shares sum to 1, else remove~~
 - ~~check if outliers are present -> Bulstrode mid November~~ (dealt with because vote shares do not sum to 1)
-- add logging in each "section" of the code with try and except (see [here](https://medium.com/@rahulkumar_33287/logger-error-versus-logger-exception-4113b39beb4b))
+- add logging in each "section" of the code with try and except (see [here](https://medium.com/@rahulkumar_33287/logger-error-versus-logger-exception-4113b39beb4b)) -> important to include stack traceback
 - move functions like loading data, calculating trends etc. to separate file
 - consider repeating values rather than interpolating -> this may be more appropriate when there is a longer break in polling, e.g. during the two-week holiday period in the summer
 - separate script to generate graph plot_trends.png -> currently still in dev script
 - pipenv
 - docstring
+- check that trend has only one obs per day -> resample('1D') method
+- parsing sample size by throwing away all non-numeric characters
+- inclusive filter when converting shares to numeric
 
-
+Example from Ruben
+```python
+string = "36.8%%§"
+pat = re.compile(r"[0-9\.,]+")
+pd.to_numeric(pat.findall(string))
+```
 
