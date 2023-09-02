@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import pandas as pd
+import re
 import matplotlib.pyplot as plt
 import seaborn as sns
 import logging
@@ -11,6 +13,47 @@ def scrape_table(url):
     soup = BeautifulSoup(response.content, "html.parser")
     table = soup.find("table")
     return table
+
+def parse_data(table, name_cols, names_candidates_and_others, footnotes, lims_sum_shares = [0.98, 1.02]):
+    # loop over all the rows in the table and store in df
+    rawdata = []
+    for row in table.find_all("tr"):
+        cells = row.find_all("td")
+        rawdata.append({name_cols[i]: cells[i].text.strip() for i in range(len(name_cols))})
+    df_rawdata = pd.DataFrame(rawdata)
+    df_data = df_rawdata.copy()
+
+    # remove footnotes
+    for f in footnotes:
+        df_data.replace(f, '')
+
+    # convert string columns to appropriate types
+    df_data['Date'] = pd.to_datetime(df_data['Date'])
+
+    df_data['Sample'] = pd.to_numeric(df_data['Sample'].str.replace(',', ''), errors='coerce').astype('Int64') # replacing , if possible; float to int
+
+    pat = re.compile(r"[0-9\.,]+")
+
+    for col in df_data.columns:
+        if col not in ['Date', 'Sample', 'Pollster']:
+            # convert vote shares to numeric, removing any non-numeric characters except ',' or '.
+            df_data[col] = pd.to_numeric(df_data[col].str.findall(pat).str.join('')) / 100.0
+
+    # remove polls that could not be parsed 
+    all_na = df_data.loc[:, names_candidates_and_others].isna().all(axis=1)
+    polls_not_parsed = df_data.loc[all_na, :]
+    print('Excluded {} row(s) because vote shares could not be converted to floats'.format(polls_not_parsed.shape[0]))
+    df_data = df_data.loc[~all_na, :]
+
+    # remove polls whose vote shares differs from 1 by more than a given margin
+    sum_shares = df_data.loc[:, names_candidates_and_others].sum(axis=1)
+    drop_row = (sum_shares < lims_sum_shares[0]) | (sum_shares > lims_sum_shares[1])
+    df_data_excluded = df_data.loc[drop_row, :] 
+    print('Excluded {} row(s) because the sum of vote shares was smaller (larger) than {} ({}).'.format(drop_row.sum(), lims_sum_shares[0], lims_sum_shares[1]))
+    df_data = df_data.loc[~drop_row, :]
+
+    return df_data
+
 
 # function to calculate trend
 def calculate_trends(df_data, 
