@@ -44,10 +44,6 @@ df_trends = calculate_trends(df_data,
                              k_days= '7D',
                              method_interpolate='linear')
 
-# %% plot trends (only for dev purposes)
-
-plot_trends_polls(df_trends, df_data, names_candidates)
-
 #%% export to csv
 
 try:
