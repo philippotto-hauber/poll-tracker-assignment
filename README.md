@@ -1,7 +1,7 @@
 # poll-tracker-assignment
 
 ## Overveiw
-This repo contains a script to scrape, clean and aggregate poll data from this [url](). The main script is `scrape_polls.py` which loads functions defined in `tools_scrape_polls.py` to perform the individual steps of the analysis. 
+This repo contains a script to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `scrape_polls.py` which loads functions defined in `tools_scrape_polls.py` to perform the individual steps of the analysis. 
 
 ## Preliminaries
 
@@ -13,13 +13,13 @@ To create the virtual environment and install the necessary packages, run the fo
 
 Linux/macOS(?)
 ```
-virtualenv venv
+virtualenv venv # assumes that virtualenv is installed and added to path
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 Windows
 ```
-virtualenv venv
+virtualenv venv # assumes that virtualenv is installed and added to path
 venv\Scripts\activate
 pip install -r requirements.txt
 ```
