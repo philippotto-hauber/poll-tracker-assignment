@@ -32,9 +32,9 @@ df_data = parse_data(table,
                     footnotes, 
                     lims_sum_shares = [0.98, 1.02])
 
-df_data.head()
-df_data.dtypes
-df_data.info(show_counts=True)
+# df_data.head()
+# df_data.dtypes
+# df_data.info(show_counts=True)
 
 #%% calculate trends
 df_trends = calculate_trends(df_data, 
@@ -48,17 +48,17 @@ plot_trends_polls(df_trends, df_data, names_candidates)
 
 #%% export to csv
 
-# rename columns to bring in line with the example files
-df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
-df_trends.index.name = 'date'
+export_dfs_to_csv(df_data, df_trends)
+# # rename columns to bring in line with the example files
+# df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
+# df_trends.index.name = 'date'
 
-# write to csv
-df_data.to_csv('polls.csv', index=False)
-df_trends.to_csv('trends.csv', index=True) # date is index!
+# # # write to csv
+# df_data.to_csv('polls.csv', index=False)
+# df_trends.to_csv('trends.csv', index=True) # date is index!
 
 #%% To-Dos
 
-# ~~backward moving average~~
 # read in footnotes from website -> id_notes etc.
 
 

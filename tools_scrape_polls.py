@@ -111,6 +111,16 @@ def calculate_trends(df_data,
 
     return df_trends
 
+# function to export dataframes to csv
+def export_dfs_to_csv(df_data, df_trends):
+    # bring columns in line with the example files
+    df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
+    df_trends.index.name = 'date'
+
+    # write to csv
+    df_data.to_csv('./polls.csv', index=False)
+    df_trends.to_csv('./trends.csv', index=True) # date is index!
+
 # function to plot trends and polls -> only for dev purposes
 def plot_trends_polls(df_trends, df_data, names_candidates, ylim = [-0.05, 0.6]):
     fig, ax = plt.subplots()
