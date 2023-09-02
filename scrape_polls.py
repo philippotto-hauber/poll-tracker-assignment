@@ -7,6 +7,8 @@ logging.basicConfig(filename = "scrape_polls.log",
                     format = '%(levelname)s: %(asctime)s %(message)s',
                     filemode = 'w')
 
+logging.info("Begin execution")
+
 #%% scrape table and footnotes from website
 url = 'https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html'
 
@@ -46,5 +48,5 @@ plot_trends_polls(df_trends, df_data, names_candidates)
 
 export_dfs_to_csv(df_data, df_trends)
 
-#%% end of file
+logging.info("Finished scraping and exporting data")
 
