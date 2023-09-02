@@ -31,7 +31,6 @@ n_candidates = len(names_candidates)
 names_candidates_and_others = [col for col in name_cols if col not in ['Date', 'Pollster', 'Sample']]
 
 #%% parse data
-
 df_data = parse_data(table, 
                     name_cols, 
                     names_candidates_and_others, 
