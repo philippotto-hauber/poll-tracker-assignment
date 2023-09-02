@@ -20,4 +20,5 @@ Scrape, clean poll data and calculate trends
 - ~~docstring~~
 - ~~check that trend has only one obs per day -> resample('1D') method~~
 - ~~inclusive filter when converting shares to numeric~~
+- handle warnings in logger -> currently written to console!
 
