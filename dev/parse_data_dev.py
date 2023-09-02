@@ -33,13 +33,23 @@ df_data = df_data.append({'Date': '2021-11-01',
 #%% define some auxiliary vars 
 names_candidates_and_others = [col for col in df_data.columns if col not in ['Date', 'Pollster', 'Sample']]
 
+footnotes = ['*', '**']
+
+#%% remove footnotes
+for f in footnotes:
+    df_data.replace(f, '')
+
 #%% parse data
+
+df_data['Date'] = pd.to_datetime(df_data['Date'])
+
+df_data['Sample'] = pd.to_numeric(df_data['Sample'].str.replace(',', ''), errors='coerce').astype('Int64') # replacing , if possible; float to int
 
 pat = re.compile(r"[0-9\.,]+")
 
 for col in df_data.columns:
     if col not in ['Date', 'Sample', 'Pollster']:
-        # removing % when needed and dividing by 100.0
+        # convert vote shares to numeric, removing any non-numeric characters except ',' or '.
         df_data[col] = pd.to_numeric(df_data[col].str.findall(pat).str.join('')) / 100.0
 
 df_data.dtypes
@@ -49,8 +59,8 @@ df_data.dtypes
 all_na = df_data.loc[:, names_candidates_and_others].isna().all(axis=1)
 
 polls_not_parsed = df_data.loc[all_na, :]
-
-polls_not_parsed.head()
+print('Excluded {} row(s) because vote shares could not be converted to floats'.format(polls_not_parsed.shape[0]))
+df_data = df_data.loc[~all_na, :]
 
 # %% find possible data entry errors
 
@@ -60,9 +70,12 @@ sum_shares = df_data.loc[:, names_candidates_and_others].sum(axis=1)
 drop_row = (sum_shares> lim_upr) | (sum_shares < lim_lwr)
 
 df_data_excluded = df_data.loc[drop_row, :] # only for dev purposes
-df_data_2 = df_data.loc[~drop_row, :]
+df_data = df_data.loc[~drop_row, :]
 
-df_data.loc[137, names_candidates_and_others].sum()
-#logging.warning('Excluded {} rows because of possible data entry errors: sum of vote shares larger (smaller) than 1.01 (0.99).'.format(drop_row.sum()))
+print('Excluded {} row(s) because the sum of vote shares was larger (smaller) than {} ({}).'.format(drop_row.sum(), lim_upr, lim_lwr))
 
-# %%
+#%% check result
+df_data.dtypes
+df_data.info(show_counts=True)
+
+
