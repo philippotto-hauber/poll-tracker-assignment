@@ -7,7 +7,7 @@ logging.basicConfig(filename = "scrape_polls.log",
                     format = '%(levelname)s: %(asctime)s %(message)s',
                     filemode = 'w')
 
-#%% scrape table and footnoes from website
+#%% scrape table and footnotes from website
 url = 'https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html'
 
 table, footnotes = scrape_table_and_footnotes(url)
