@@ -7,12 +7,30 @@ import seaborn as sns
 import logging
 sns.set_style("darkgrid")
 
-# function to scrape table from url
-def scrape_table(url):
+def scrape_table_and_footnotes(url):
+    """Scrape html table and footnotes
+
+    Parameters:
+    url (str) : url of website containing polling data
+
+    Returns:
+    table (BeautifulSoup) : contains html table
+    footnotes (dict)      : dict of footnotes (keys = markers, value = footnote text)  
+    """
+
     response = requests.get(url)
     soup = BeautifulSoup(response.content, "html.parser")
+
+    # table with poll data
     table = soup.find("table")
-    return table
+
+    # footnotes as a dict
+    tmp = soup.find('ul').find_all("li")
+    footnotes = {}
+    for li in tmp:
+        footnotes[li['data-mark']] = li.text.replace('\n', ' ').strip()
+    
+    return table, footnotes
 
 def parse_data(table, name_cols, names_candidates_and_others, footnotes, lims_sum_shares = [0.98, 1.02]):
     """Parse poll results from html table
@@ -27,7 +45,7 @@ def parse_data(table, name_cols, names_candidates_and_others, footnotes, lims_su
     Returns:
     df_data (DataFrame)   : contains trend vote shares (columns) over time (rows)
 
-   """
+    """
     
     # loop over all the rows in the table and store in df
     rawdata = []
@@ -38,7 +56,7 @@ def parse_data(table, name_cols, names_candidates_and_others, footnotes, lims_su
     df_data = df_rawdata.copy()
 
     # remove footnotes
-    for f in footnotes:
+    for f in footnotes.keys():
         df_data.replace(f, '')
 
     # convert string columns to appropriate types
@@ -70,8 +88,6 @@ def parse_data(table, name_cols, names_candidates_and_others, footnotes, lims_su
 
     return df_data
 
-
-# function to calculate trend
 def calculate_trends(df_data, 
                      names_candidates, 
                      k_days = '7D', 
@@ -111,7 +127,6 @@ def calculate_trends(df_data,
 
     return df_trends
 
-# function to export dataframes to csv
 def export_dfs_to_csv(df_data, df_trends):
     # bring columns in line with the example files
     df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
@@ -121,7 +136,6 @@ def export_dfs_to_csv(df_data, df_trends):
     df_data.to_csv('./polls.csv', index=False)
     df_trends.to_csv('./trends.csv', index=True) # date is index!
 
-# function to plot trends and polls -> only for dev purposes
 def plot_trends_polls(df_trends, df_data, names_candidates, ylim = [-0.05, 0.6]):
     fig, ax = plt.subplots()
     colors_plot = ['blue', 'red', 'green', 'orange', 'purple', 'brown']
