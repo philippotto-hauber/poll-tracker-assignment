@@ -1,4 +1,6 @@
 import pandas as pd
+# to keep the requirements.txt file small, we don't include matplotlib and seaborn
+# therefore run this script outside of the virtual environment where matplotlib and seaborn are installed
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set_style("darkgrid")
