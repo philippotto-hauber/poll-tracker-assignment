@@ -22,7 +22,9 @@ Scrape, clean poll data and calculate trends
 - ~~inclusive filter when converting shares to numeric~~
 - handle warnings in logger -> currently written to console!
 - html tests
-
+- short docu of steps in README
+- only keep packages necessary for running scraper in requirements.txt, i.e. no matplotlib and jupyter
+- pandas has to be version 1.2.0!
 
 Linux
 ```
