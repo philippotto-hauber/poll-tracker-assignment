@@ -2,10 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
-import matplotlib.pyplot as plt
-import seaborn as sns
 import logging
-sns.set_style("darkgrid")
 
 def scrape_table_and_footnotes(url):
     """Scrape html table and footnotes
