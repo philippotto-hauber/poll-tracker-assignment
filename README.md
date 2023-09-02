@@ -45,7 +45,7 @@ With polling data up to March 25, 2024 the trends for the five candidates look l
 
 ### Export to csv
 
-
+The results are written in to csv files in the present working directory. In line with the example files provided, the trends (polls) are in (reverse) chronological order. 
 
 
 ## To do
