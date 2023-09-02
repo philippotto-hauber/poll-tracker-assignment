@@ -21,4 +21,19 @@ Scrape, clean poll data and calculate trends
 - ~~check that trend has only one obs per day -> resample('1D') method~~
 - ~~inclusive filter when converting shares to numeric~~
 - handle warnings in logger -> currently written to console!
+- html tests
+
+
+Linux
+```
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+Windows
+```
+virtualenv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
 
