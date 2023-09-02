@@ -38,15 +38,6 @@ df_data = parse_data(table,
                     footnotes, 
                     lims_sum_shares = [0.98, 1.02])
 
-# convert df to html table
-df_data_html = df_data.to_html()
-
-# export mto test.html
-with open("test.html", "w") as file:
-    file.write(df_data_html)
-
-# show pwd
-
 #%% calculate trends
 df_trends = calculate_trends(df_data, 
                              names_candidates,
