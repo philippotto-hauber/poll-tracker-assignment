@@ -1,8 +1,4 @@
 #%% load packages
-import logging
-import requests
-from bs4 import BeautifulSoup
-import pandas as pd
 from tools_scrape_polls import *
 
 #%% set up logging
@@ -11,12 +7,12 @@ logging.basicConfig(filename = "scrape_polls.log",
                     format = '%(levelname)s: %(asctime)s %(message)s',
                     filemode = 'w')
 
-#%% load table from website
+#%% scrape table and footnoes from website
 url = 'https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html'
 
-table = scrape_table(url)
-footnotes = ['*', '**']
+table, footnotes = scrape_table_and_footnotes(url)
 
+#%% define a few variables
 name_cols = [col.text.strip() for col in table.find_all("th")]
 n_col = len(name_cols)
 n_row = table.find_all("tr")
@@ -49,18 +45,6 @@ plot_trends_polls(df_trends, df_data, names_candidates)
 #%% export to csv
 
 export_dfs_to_csv(df_data, df_trends)
-# # rename columns to bring in line with the example files
-# df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
-# df_trends.index.name = 'date'
 
-# # # write to csv
-# df_data.to_csv('polls.csv', index=False)
-# df_trends.to_csv('trends.csv', index=True) # date is index!
-
-#%% To-Dos
-
-# read in footnotes from website -> id_notes etc.
-
-
-# 
+#%% end of file
 
