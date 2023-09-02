@@ -15,6 +15,20 @@ def scrape_table(url):
     return table
 
 def parse_data(table, name_cols, names_candidates_and_others, footnotes, lims_sum_shares = [0.98, 1.02]):
+    """Parse poll results from html table
+
+    Parameters:
+    table (BeautifulSoup)  : contains html table
+    name_cols (list)       : column names
+    names_candidates_and_others (list): List of candidates in the election, incl. 'Others'
+    footnotes (list)       : footnotes to be removed
+    lims_sum_shares (list) : lower and upper limit for sum of vote shares to determine if poll should be removed
+
+    Returns:
+    df_data (DataFrame)   : contains trend vote shares (columns) over time (rows)
+
+   """
+    
     # loop over all the rows in the table and store in df
     rawdata = []
     for row in table.find_all("tr"):
