@@ -11,7 +11,7 @@ def scrape_table_and_footnotes(url):
     url (str) : url of website containing polling data
 
     Returns:
-    table (BeautifulSoup) : contains html table
+    df_rawdata (DataFrame) : contains content of html table as strings
     footnotes (dict)      : dict of footnotes (keys = markers, value = footnote text)  
     """
 
@@ -21,35 +21,37 @@ def scrape_table_and_footnotes(url):
     # table with poll data
     table = soup.find("table")
 
+    # table headers
+    names_cols = [col.text.strip() for col in table.find_all("th")]
+    
+    # loop over all the rows in the table and store in df
+    rawdata = []
+    for row in table.find_all("tr"):
+        cells = row.find_all("td")
+        rawdata.append({names_cols[i]: cells[i].text.strip() for i in range(len(names_cols))})
+    df_rawdata = pd.DataFrame(rawdata)
+
     # footnotes as a dict
     tmp = soup.find('ul', id='notes').find_all("li")
     footnotes = {}
     for li in tmp:
         footnotes[li['data-mark']] = li.text.replace('\n', ' ').strip()
     
-    return table, footnotes
+    return df_rawdata, footnotes
 
-def parse_data(table, name_cols, names_candidates_and_others, footnotes, lims_sum_shares = [0.98, 1.02]):
+def parse_data(df_rawdata, names_candidates_and_others, footnotes, lims_sum_shares = [0.98, 1.02]):
     """Parse poll results from html table
 
     Parameters:
-    table (BeautifulSoup)  : contains html table
-    name_cols (list)       : column names
+    df_rawdata (DataFrame) : content of html table formatted as strings
     names_candidates_and_others (list): List of candidates in the election, incl. 'Others'
     footnotes (list)       : footnotes to be removed
     lims_sum_shares (list) : lower and upper limit for sum of vote shares to determine if poll should be removed
 
     Returns:
-    df_data (DataFrame)   : contains trend vote shares (columns) over time (rows)
-
+    df_data (DataFrame)   : contains date of poll, pollster, sample size, vote shares in different formats (e.g. datetime, floats)
     """
     
-    # loop over all the rows in the table and store in df
-    rawdata = []
-    for row in table.find_all("tr"):
-        cells = row.find_all("td")
-        rawdata.append({name_cols[i]: cells[i].text.strip() for i in range(len(name_cols))})
-    df_rawdata = pd.DataFrame(rawdata)
     df_data = df_rawdata.copy()
 
     # remove footnotes

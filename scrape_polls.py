@@ -2,6 +2,9 @@
 from tools_scrape_polls import *
 import sys
 
+#%% settings
+url = 'https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html'
+
 #%% set up logging
 logging.basicConfig(filename = "log_scrape_polls.log", 
                     level = logging.INFO,
@@ -11,13 +14,12 @@ logging.basicConfig(filename = "log_scrape_polls.log",
 logging.captureWarnings(True) # re-routes warnings to log file
 logging.info("Begin execution")
 
-error_msg = 'Script terminated with error. Check log file for details.'
+error_msg = 'Script terminated with error! Check log file for details.'
 
 #%% scrape table and footnotes from website
-url = 'https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html'
 
 try:
-    table, footnotes = scrape_table_and_footnotes(url)
+    df_rawdata, footnotes = scrape_table_and_footnotes(url)
     logging.info("Sucessfully scraped content from url!")
 except Exception as e:
     logging.error(e, exc_info=True)
@@ -25,15 +27,13 @@ except Exception as e:
     sys.exit(1)
 
 
-#%% define a few variables
-name_cols = [col.text.strip() for col in table.find_all("th")]
-names_candidates = [col for col in name_cols if col not in ['Date', 'Pollster', 'Sample', 'Others']]
-names_candidates_and_others = [col for col in name_cols if col not in ['Date', 'Pollster', 'Sample']]
+#%% define column-ids needed to check data and calculate trends
+names_candidates = [col for col in df_rawdata.columns if col not in ['Date', 'Pollster', 'Sample', 'Others']]
+names_candidates_and_others = [col for col in df_rawdata.columns if col not in ['Date', 'Pollster', 'Sample']]
 
 #%% parse data
 try:
-    df_data = parse_data(table, 
-                    name_cols, 
+    df_data = parse_data(df_rawdata, 
                     names_candidates_and_others, 
                     footnotes, 
                     lims_sum_shares = [0.98, 1.02])
@@ -59,11 +59,11 @@ except Exception as e:
 
 try:
     export_dfs_to_csv(df_data, df_trends)
-    logging.info('Polls and trends exported to csv.')
+    logging.info('Successfully exported polls and trends to csv.')
 except Exception as e:
     logging.error(e, exc_info=True)
     print(error_msg)
     sys.exit(1)
 
-print('Script terminated successfully. Data exported to csv. Check log file for possible warnings.')    
+print('Script terminated successfully! Generated polls.csv and trends.csv. Check log file for possible warnings.')    
 
