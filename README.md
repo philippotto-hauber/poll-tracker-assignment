@@ -1,7 +1,7 @@
 # poll-tracker-assignment
 
 ## Overveiw
-This repo contains a script to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `scrape_polls.py` which loads functions defined in `tools_scrape_polls.py` to perform the individual steps of the analysis. 
+This repo contains a script to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `scrape_polls.py` which loads functions defined in `tools_scrape_polls.py` to perform the individual steps of the analysis. The output are two csv files: `polls.csv` and `trends.csv`. 
 
 ## Preliminaries
 
@@ -23,6 +23,8 @@ virtualenv venv # assumes that virtualenv is installed and added to path
 venv\Scripts\activate
 pip install -r requirements.txt
 ```
+Examples: WSL, Raspbian 
+
 ### Logging and error handling
 
 ## Short description of the steps in the analysis
@@ -37,7 +39,7 @@ pip install -r requirements.txt
 
 I calculate the trend as a **7-day moving average** of the reported vote share. To deal with days where there are no observations I first **linearly interpolate** the missing values. 
 
-With polling data up to XXX, this produces the following trends for the five candidates:
+With polling data up to March 25, 2024 the trends for the five candidates look like this:
 
 ![Figure: trends](./plots/plot_trends.png)
 
@@ -58,7 +60,7 @@ With polling data up to XXX, this produces the following trends for the five can
 - ~~check if outliers are present -> Bulstrode mid November~~ (dealt with because vote shares do not sum to 1)
 - ~~add logging in each "section" of the code with try and except (see [here](https://medium.com/@rahulkumar_33287/logger-error-versus-logger-exception-4113b39beb4b)) -> important to include stack traceback~~
 - ~~move functions like loading data, calculating trends etc. to separate file~~
-- move calc of df_rawdata from parse_data() to scrape_table()
+- ~~move calc of df_rawdata from parse_data() to scrape_table()~~
 - ~~consider repeating values rather than interpolating -> this may be more appropriate when there is a longer break in polling, e.g. during the two-week holiday period in the summer~~
 - ~~separate script to generate graph plot_trends.png -> currently still in dev script~~
 - ~~virtualenv~~
@@ -72,6 +74,7 @@ With polling data up to XXX, this produces the following trends for the five can
 - pandas has to be version 1.2.0!
 - ~~adjust message when aborting script~~
 - ~~remove option pad for trend~~
+- figure of sum of shares
 
 
 
