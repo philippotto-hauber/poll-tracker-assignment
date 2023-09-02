@@ -112,11 +112,8 @@ def calculate_trends(df_data,
     # interpolate missing values
     if method_interpolate == 'linear':
         df_trends = df_trends.interpolate(method='linear', limit_direction='both')
-    elif method_interpolate == 'pad':
-        df_trends = df_trends.interpolate(method='pad')
     else:
-        logging.error('method_interpolate must be either linear or pad')
-        #raise ValueError('method_interpolate must be either linear or pad')
+        raise ValueError('method_interpolate must be linear')
     
     # calculate k_days rolling average
     df_trends = df_trends.rolling(window=k_days, on = df_trends.index).mean()
