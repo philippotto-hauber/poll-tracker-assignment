@@ -35,7 +35,9 @@ pip install -r requirements.txt
 
 ### Calculate trends
 
-I calculate the trend as a **7-day moving average**. To deal with missing observations I first **linearly interpolate** the missing values. With polling data up to XXX, this produces the following trends for the five candidates:
+I calculate the trend as a **7-day moving average** of the reported vote share. To deal with days where there are no observations I first **linearly interpolate** the missing values. 
+
+With polling data up to XXX, this produces the following trends for the five candidates:
 
 ![Figure: trends](./plots/plot_trends.png)
 
@@ -66,9 +68,10 @@ I calculate the trend as a **7-day moving average**. To deal with missing observ
 - handle warnings in logger -> currently written to console!
 - html tests
 - short docu of steps in README
-- only keep packages necessary for running scraper in requirements.txt, i.e. no matplotlib and jupyter
+- ~~only keep packages necessary for running scraper in requirements.txt, i.e. no matplotlib and jupyter~~
 - pandas has to be version 1.2.0!
-
+- adjust message when aborting script
+- remove option pad for trend
 
 
 
