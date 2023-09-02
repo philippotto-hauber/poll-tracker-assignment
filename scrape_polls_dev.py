@@ -25,37 +25,12 @@ n_candidates = len(names_candidates)
 names_candidates_and_others = [col for col in name_cols if col not in ['Date', 'Pollster', 'Sample']]
 
 #%% parse data
- 
-# loop over all the rows in the table and store data in df
-rawdata = []
-for row in table.find_all("tr"):
-    cells = row.find_all("td")
-    rawdata.append({name_cols[i]: cells[i].text.strip() for i in range(len(name_cols))})
 
-df_rawdata = pd.DataFrame(rawdata)
-
-# remove footnotes
-for f in footnotes:
-    df_rawdata.replace(f, '')
-
-# convert columns from strings to appropriate types
-df_data = df_rawdata.copy()
-df_data['Date'] = pd.to_datetime(df_data['Date'])
-
-df_data['Sample'] = pd.to_numeric(df_data['Sample'].str.replace(',', ''), errors='coerce').astype('Int64') # replacing , if possible; float to int
-
-for col in df_data.columns:
-    if col not in ['Date', 'Sample', 'Pollster']:
-        # removing % when needed and dividing by 100.0
-        df_data[col] = pd.to_numeric(df_data[col].str.replace('%', ''), errors='coerce') / 100.0
-
-
-# check if shares sum to 1
-drop_row = (df_data.loc[:, names_candidates_and_others].sum(axis=1, skipna=False) > 1.01) | (df_data.loc[:, names_candidates_and_others].sum(axis=1, skipna=False) < 0.99)
-
-df_data_excluded = df_data.loc[drop_row, :] # only for dev purposes
-df_data = df_data.loc[~drop_row, :]
-logging.warning('Excluded {} rows because of possible data entry errors: sum of vote shares larger (smaller) than 1.01 (0.99).'.format(drop_row.sum()))
+df_data = parse_data(table, 
+                    name_cols, 
+                    names_candidates_and_others, 
+                    footnotes, 
+                    lims_sum_shares = [0.98, 1.02])
 
 df_data.head()
 df_data.dtypes
@@ -85,13 +60,7 @@ df_trends.to_csv('trends.csv', index=True) # date is index!
 
 # ~~backward moving average~~
 # read in footnotes from website -> id_notes etc.
-# check which polls could not be parsed
-# check if shares sum to 1
-# check if outliers are present -> Bulstrode mid November
-# add logging
-# move functions like loading data, calculating trends etc. to separate file
 
 
-# rename index of df_trends to date
 # 
 
