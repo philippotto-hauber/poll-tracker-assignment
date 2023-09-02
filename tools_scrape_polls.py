@@ -25,7 +25,7 @@ def scrape_table_and_footnotes(url):
     table = soup.find("table")
 
     # footnotes as a dict
-    tmp = soup.find('ul').find_all("li")
+    tmp = soup.find('ul', id='notes').find_all("li")
     footnotes = {}
     for li in tmp:
         footnotes[li['data-mark']] = li.text.replace('\n', ' ').strip()
@@ -57,12 +57,14 @@ def parse_data(table, name_cols, names_candidates_and_others, footnotes, lims_su
 
     # remove footnotes
     for f in footnotes.keys():
-        df_data.replace(f, '')
+        for col in df_data.columns:
+            # according to docu default is False, but without explicitly setting it to False encountered regex error!
+            df_data[col] = df_data[col].str.replace(f, '', regex=False) 
 
     # convert string columns to appropriate types
     df_data['Date'] = pd.to_datetime(df_data['Date'])
 
-    df_data['Sample'] = pd.to_numeric(df_data['Sample'].str.replace(',', ''), errors='coerce').astype('Int64') # replacing , if possible; float to int
+    df_data['Sample'] = pd.to_numeric(df_data['Sample'].str.replace(',', '')).astype('Int64') # replacing , if possible; float to int
 
     pat = re.compile(r"[0-9\.,]+")
 
