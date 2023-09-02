@@ -3,15 +3,15 @@ from tools_scrape_polls import *
 import sys
 
 #%% set up logging
-logging.basicConfig(filename = "scrape_polls.log", 
+logging.basicConfig(filename = "log_scrape_polls.log", 
                     level = logging.INFO,
-                    format = '%(levelname)s: %(asctime)s %(message)s',
+                    format = '%(asctime)s %(levelname)s: %(message)s',
                     filemode = 'w')
 
 logging.captureWarnings(True) # re-routes warnings to log file
 logging.info("Begin execution")
 
-error_msg = 'Script terminated with error. Check scrape_polls.log for details.'
+error_msg = 'Script terminated with error. Check log file for details.'
 
 #%% scrape table and footnotes from website
 url = 'https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html'
@@ -27,10 +27,7 @@ except Exception as e:
 
 #%% define a few variables
 name_cols = [col.text.strip() for col in table.find_all("th")]
-n_col = len(name_cols)
-n_row = table.find_all("tr")
 names_candidates = [col for col in name_cols if col not in ['Date', 'Pollster', 'Sample', 'Others']]
-n_candidates = len(names_candidates)
 names_candidates_and_others = [col for col in name_cols if col not in ['Date', 'Pollster', 'Sample']]
 
 #%% parse data
@@ -62,9 +59,11 @@ except Exception as e:
 
 try:
     export_dfs_to_csv(df_data, df_trends)
-    logging.info('Script terminated successfully. Data exported to csv. Check scrape_polls.log for possible warnings.')
+    logging.info('Polls and trends exported to csv.')
 except Exception as e:
     logging.error(e, exc_info=True)
     print(error_msg)
     sys.exit(1)
+
+print('Script terminated successfully. Data exported to csv. Check log file for possible warnings.')    
 
