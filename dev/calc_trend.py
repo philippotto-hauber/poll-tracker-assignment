@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from tools_scrape_polls import *
+from tools_poll_tracker import *
 
 method_interpolate = 'linear'
 
