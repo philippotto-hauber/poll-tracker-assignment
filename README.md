@@ -133,6 +133,7 @@ The results are written to csv files in the present working directory. In line w
 - ~~check that all functions have docstrings~~
 - ~~rename scripts to poll_tracker.py and tools_poll_tracker.py and adjust documentation!~~
 - ~~put log with url error in readme -> better for demonstration purposes~~
+- rename df_data to df_poll (highly optional)
 
 
 
