@@ -124,6 +124,8 @@ def calculate_trends(df_data,
     return df_trends
 
 def export_dfs_to_csv(df_data, df_trends):
+    """Export dataframes to csv"""
+    
     # bring columns in line with the example files
     df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
     df_trends.index.name = 'date'
