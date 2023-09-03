@@ -1,7 +1,7 @@
 # poll-tracker-assignment
 
 ## Overview
-This repo contains a script to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `scrape_polls.py` which loads functions defined in `tools_scrape_polls.py` to perform the individual steps of the analysis. The output are two csv files: `polls.csv` and `trends.csv`. 
+This repo contains a script to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `scrape_polls.py` which loads functions defined in `tools_scrape_polls.py` to perform the individual steps of the analysis. The outputs are two csv files: `polls.csv` and `trends.csv`. 
 
 ## Preliminaries
 
@@ -27,13 +27,28 @@ Examples: WSL, Raspbian
 
 ### Logging and error handling
 
-## Short description of the steps in the analysis
+The script uses Python's `logging` module to log messages to file. These include `INFO` messages whenever a section of the code has been completed successfully. 
+
+When polls are removed because of data irregularities (see below), a `WARNING` is written to the log file. Non-expected warnings are also re-routed to the log file rather than the console. 
+
+Each code section is excecuted in a try and except block and any exceptions including tracebacks are written as `ERROR` to the log file. The execution of the script is then interrupted to avoid follow-on errors.
+
+Only the result of the execution - success or error - is printed to the console with a reminder to check the log file for details. 
+
+
+## Short description of the script sections
 
 ### Scrape url 
+
+
 
 ### Parse and transform data
 
 #### Dealing with data irregularities
+
+The script should be able to convert most string formats for the vote shares to floats (e.g. `30`, `30.6`, `30,6`, `30.6%` or typos like `30.6$`). However, when this is not possible the script does not raise an exception. Instead it sets all vote shares to `NaN` and in a subsequent step, all such polls are dropped from the analysis and a warning issued. 
+
+The script also checks if the vote shares (approximately) sum to 1 to catch potential data entry errors. An example is the poll by on November 18th, 2023 where the reported vote share for Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1 suggesting a data entry error. Such polls are removed and a warning issued.
 
 ### Calculate trends
 
@@ -75,6 +90,9 @@ The results are written in to csv files in the present working directory. In lin
 - ~~adjust message when aborting script~~
 - ~~remove option pad for trend~~
 - figure of sum of shares
+- test virtualenv on windows and linux
+- remove df_data_removed et al. from script
+- ~~rename plot function~~
 
 
 
