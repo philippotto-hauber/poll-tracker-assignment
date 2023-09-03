@@ -35,7 +35,7 @@ Each code section is excecuted in a "try and except"-block and any exceptions in
 
 Only the result of the execution - success or error - is printed to the console with a reminder to check the log file for details. 
 
-A typical log file could look like this:
+A typical log file for a successful run would look like this:
 
 ```
 2023-09-03 11:15:15,805 INFO: Begin execution
@@ -60,7 +60,7 @@ After scraping the table from the url, all footnoes are removed from the rows an
 
 | Column     | Type       |
 |------------|------------|
-| Date       | datetime64 |
+| Date       | datetime64[ns] |
 | Pollster   | object     |
 | Sample     | Int64      |
 | Candidate1 | Float64    |
@@ -70,7 +70,7 @@ After scraping the table from the url, all footnoes are removed from the rows an
 
 #### Dealing with data irregularities
 
-The script is able to parse the (string) vote shares as floats. For example `'30'`, `'30.6'`, `'30,6'`, `'30.6%'` or typos like `'30.6$'` are all converted to `30.0` or `30.6`, respectively. However, if the conversion fails the script does not raise an exception. Instead, vote shares that could not be parsed are set to `NaN` and in a subsequent step, polls for which all vote shares are `NaN` are dropped from the analysis and a warning is issued. 
+The script should be able to parse the (string) vote shares as floats. For example `'30'`, `'30.6'`, `'30,6'`, `'30.6%'` or typos like `'30.6$'` are all converted to `30.0` or `30.6`, respectively. However, if the conversion fails for some reason, the script does not raise an exception. Instead, vote shares that could not be parsed are set to `NaN` and in a subsequent step, polls for which all vote shares are `NaN` are dropped from the analysis and a warning is issued. 
 
 The script also checks - accounting for rounding errors -  if the vote shares approximately sum to 1. This should catch potential data entry errors. An example is the poll by Policy Voice Polling on November 18th, 2023 where the reported vote share for the candidate Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1, suggesting a data entry error. Such polls are removed and a warning issued. Note that this approach will also catch any polls where the vote shares of some but not all candidates could not be parsed as floats! 
 
@@ -108,7 +108,7 @@ The results are written to csv files in the present working directory. In line w
 - ~~inclusive filter when converting shares to numeric~~
 - ~~handle warnings in logger -> currently written to console!~~
 - html tests
-- short docu of steps in README
+- ~~short docu of steps in README~~
 - ~~only keep packages necessary for running scraper in requirements.txt, i.e. no matplotlib and jupyter~~
 - pandas has to be version 1.2.0!
 - ~~adjust message when aborting script~~
