@@ -31,24 +31,48 @@ The script uses Python's `logging` module to log messages to file. These include
 
 When polls are removed because of data irregularities (see below), a `WARNING` is written to the log file. Non-expected warnings are also re-routed to the log file rather than the console. 
 
-Each code section is excecuted in a try and except block and any exceptions including tracebacks are written as `ERROR` to the log file. The execution of the script is then interrupted to avoid follow-on errors.
+Each code section is excecuted in a "try and except"-block and any exceptions including tracebacks are written as `ERROR` to the log file. The execution of the script is then interrupted to avoid follow-on errors.
 
 Only the result of the execution - success or error - is printed to the console with a reminder to check the log file for details. 
+
+A typical log file could look like this:
+
+```
+2023-09-03 11:15:15,805 INFO: Begin execution
+2023-09-03 11:15:16,077 INFO: Sucessfully scraped content from url!
+2023-09-03 11:15:16,133 WARNING: Excluded 1 poll(s) because vote shares could not be converted to floats
+2023-09-03 11:15:16,135 WARNING: Excluded 1 poll(s) because the sum of vote shares was smaller (larger) than 0.98 (1.02).
+2023-09-03 11:15:16,135 INFO: Sucessfully parsed data!
+2023-09-03 11:15:16,160 INFO: Sucessfully calculated trends!
+2023-09-03 11:15:16,175 INFO: Successfully exported polls and trends to csv.
+```
 
 
 ## Short description of the script sections
 
 ### Scrape url 
 
+The script scrapes the table from the url containing the polling data as well as the footnotes at the bottom of the table. 
 
+### Parse data
 
-### Parse and transform data
+After scraping the table from the url, all footnoes are removed from the rows and the string values in the columns are converted to the appropriate data types. 
+
+| Column     | Type       |
+|------------|------------|
+| Date       | datetime64 |
+| Pollster   | object     |
+| Sample     | Int64      |
+| Candidate1 | Float64    |
+| ...        | ...        |
+| Others     | Float64    |
+
 
 #### Dealing with data irregularities
 
-The script should be able to convert most string formats for the vote shares to floats (e.g. `30`, `30.6`, `30,6`, `30.6%` or typos like `30.6$`). However, when this is not possible the script does not raise an exception. Instead it sets all vote shares to `NaN` and in a subsequent step, all such polls are dropped from the analysis and a warning issued. 
+The script is able to parse the (string) vote shares as floats. For example `'30'`, `'30.6'`, `'30,6'`, `'30.6%'` or typos like `'30.6$'` are all converted to `30.0` or `30.6`, respectively. However, if the conversion fails the script does not raise an exception. Instead, vote shares that could not be parsed are set to `NaN` and in a subsequent step, polls for which all vote shares are `NaN` are dropped from the analysis and a warning is issued. 
 
-The script also checks if the vote shares (approximately) sum to 1 to catch potential data entry errors. An example is the poll by on November 18th, 2023 where the reported vote share for Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1 suggesting a data entry error. Such polls are removed and a warning issued.
+The script also checks - accounting for rounding errors -  if the vote shares approximately sum to 1. This should catch potential data entry errors. An example is the poll by Policy Voice Polling on November 18th, 2023 where the reported vote share for the candidate Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1, suggesting a data entry error. Such polls are removed and a warning issued. Note that this approach will also catch any polls where the vote shares of some but not all candidates could not be parsed as floats! 
 
 ### Calculate trends
 
@@ -60,7 +84,7 @@ With polling data up to March 25, 2024 the trends for the five candidates look l
 
 ### Export to csv
 
-The results are written in to csv files in the present working directory. In line with the example files provided, the trends (polls) are in (reverse) chronological order. 
+The results are written to csv files in the present working directory. In line with the example files provided, the trends (polls) are in (reverse) chronological order. 
 
 
 ## To do
@@ -89,10 +113,11 @@ The results are written in to csv files in the present working directory. In lin
 - pandas has to be version 1.2.0!
 - ~~adjust message when aborting script~~
 - ~~remove option pad for trend~~
-- figure of sum of shares
+- ~~figure of sum of shares -> decided against it~~
 - test virtualenv on windows and linux
-- remove df_data_removed et al. from script
+- ~~remove df_data_removed et al. from script~~
 - ~~rename plot function~~
+- check that all functions have docstrings
 
 
 
