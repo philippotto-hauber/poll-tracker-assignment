@@ -37,13 +37,13 @@ Only the result of the execution - success or error - is printed to the console 
 
 To illustrate the logging and error handling, I ran the script with a typo in the url. The console output looks like this:
 
-```bash
+```
 Script terminated with error! Check log file for details.
 ```
 
 and the log file contains an initial `WARNING` that something is up with the html-file and then the code crashes when it tries to scrape the content of the url, yielding an `ERROR` including the traceback:
 
-```bash
+```
 2023-09-03 12:53:39,128 INFO: Begin execution
 2023-09-03 12:53:39,806 WARNING: C:\Users\Philipp\Dropbox\econ-pol-data-scientist\stage-3\poll-tracker-assignment\venv\lib\site-packages\bs4\builder\__init__.py:545: XMLParsedAsHTMLWarning: It looks like you're parsing an XML document using an HTML parser. If this really is an HTML document (maybe it's XHTML?), you can ignore or filter this warning. If it's XML, you should know that using an XML parser will be more reliable. To parse this document as XML, make sure you have the lxml package installed, and pass the keyword argument `features="xml"` into the BeautifulSoup constructor.
   warnings.warn(
