@@ -1,7 +1,7 @@
 # poll-tracker-assignment
 
 ## Overview
-This repo contains a script to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `scrape_polls.py` which loads functions defined in `tools_scrape_polls.py` to perform the individual steps of the analysis. The outputs are two csv files: `polls.csv` and `trends.csv`. 
+This repo contains a script to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `poll_tracker.py` which loads functions defined in `tools_poll_tracker.py` to perform the individual steps of the analysis. The outputs are two csv files: `polls.csv` and `trends.csv`. 
 
 ## Preliminaries
 
