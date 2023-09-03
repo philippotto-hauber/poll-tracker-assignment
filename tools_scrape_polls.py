@@ -68,14 +68,14 @@ def parse_data(df_rawdata, names_candidates_and_others, footnotes, lims_sum_shar
     pat = re.compile(r"[0-9\.,]+")
 
     for col in df_data.columns:
-        if col not in ['Date', 'Sample', 'Pollster']:
+        if col in names_candidates_and_others:
             # convert vote shares to numeric, removing any non-numeric characters except ',' or '.
-            df_data[col] = pd.to_numeric(df_data[col].str.findall(pat).str.join('')) / 100.0
+            df_data[col] = pd.to_numeric(df_data[col].str.findall(pat).str.join(''), errors = 'coerce') / 100.0
 
     # remove polls that could not be parsed 
     all_na = df_data.loc[:, names_candidates_and_others].isna().all(axis=1)
     if sum(all_na) > 0:
-        logging.warning('Excluded {} row(s) because vote shares could not be converted to floats'.format(all_na.sum()))
+        logging.warning('Excluded {} poll(s) because vote shares could not be converted to floats'.format(all_na.sum()))
     df_data = df_data.loc[~all_na, :]
 
     # remove polls whose vote shares differs from 1 by more than a given margin
