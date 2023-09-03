@@ -41,7 +41,7 @@ To illustrate the logging and error handling, I ran the script with a typo in th
 Script terminated with error! Check log file for details.
 ```
 
-and the log file contains an initial `WARNING` and then the `ERROR` including the traceback:
+and the log file contains an initial `WARNING` that something is up with the html-file and then the code crashes when it tries to scrape the content of the url, yielding an `ERROR` including the traceback:
 
 ```bash
 2023-09-03 12:53:39,128 INFO: Begin execution
@@ -132,7 +132,7 @@ The results are written to csv files in the present working directory. In line w
 - ~~rename plot function~~
 - ~~check that all functions have docstrings~~
 - ~~rename scripts to poll_tracker.py and tools_poll_tracker.py and adjust documentation!~~
-- put log with url error in readme -> better for demonstration purposes
+- ~~put log with url error in readme -> better for demonstration purposes~~
 
 
 
