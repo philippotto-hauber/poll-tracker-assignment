@@ -118,8 +118,9 @@ def calculate_trends(df_data,
     # calculate k_days rolling average
     df_trends = df_trends.rolling(window=k_days, on = df_trends.index).mean()
 
-    # overwrite trend of Others with 1 - sum of trends of all candidates
-    df_trends['Others'] = 1 - df_trends.loc[:, names_candidates].sum(axis=1, skipna=False)
+    # overwrite trend of Others with 1 - sum of trends of all candidates (if Others is in df_trends)
+    if 'Others' in df_trends.columns:
+        df_trends['Others'] = 1 - df_trends.loc[:, names_candidates].sum(axis=1, skipna=False)
 
     return df_trends
 
