@@ -35,17 +35,28 @@ Each code section is excecuted in a "try and except"-block and any exceptions in
 
 Only the result of the execution - success or error - is printed to the console with a reminder to check the log file for details. 
 
-A typical log file for a successful run would look like this:
+To illustrate the logging and error handling, I ran the script with a typo in the url. The console output looks like this:
 
+```bash
+Script terminated with error! Check log file for details.
 ```
-2023-09-03 11:15:15,805 INFO: Begin execution
-2023-09-03 11:15:16,077 INFO: Sucessfully scraped content from url!
-2023-09-03 11:15:16,133 WARNING: Excluded 1 poll(s) because vote shares could not be converted to floats
-2023-09-03 11:15:16,135 WARNING: Excluded 1 poll(s) because the sum of vote shares was smaller (larger) than 0.98 (1.02).
-2023-09-03 11:15:16,135 INFO: Sucessfully parsed data!
-2023-09-03 11:15:16,160 INFO: Sucessfully calculated trends!
-2023-09-03 11:15:16,175 INFO: Successfully exported polls and trends to csv.
+
+and the log file contains an initial `WARNING` as well as the `ERROR` with the traceback:
+
+```bash
+2023-09-03 12:53:39,128 INFO: Begin execution
+2023-09-03 12:53:39,806 WARNING: C:\Users\Philipp\Dropbox\econ-pol-data-scientist\stage-3\poll-tracker-assignment\venv\lib\site-packages\bs4\builder\__init__.py:545: XMLParsedAsHTMLWarning: It looks like you're parsing an XML document using an HTML parser. If this really is an HTML document (maybe it's XHTML?), you can ignore or filter this warning. If it's XML, you should know that using an XML parser will be more reliable. To parse this document as XML, make sure you have the lxml package installed, and pass the keyword argument `features="xml"` into the BeautifulSoup constructor.
+  warnings.warn(
+
+2023-09-03 12:53:39,807 ERROR: 'NoneType' object has no attribute 'find_all'
+Traceback (most recent call last):
+  File "C:\Users\Philipp\Dropbox\econ-pol-data-scientist\stage-3\poll-tracker-assignment\poll_tracker.py", line 20, in <module>
+    df_rawdata, footnotes = scrape_table_and_footnotes(url)
+  File "C:\Users\Philipp\Dropbox\econ-pol-data-scientist\stage-3\poll-tracker-assignment\tools_poll_tracker.py", line 25, in scrape_table_and_footnotes
+    names_cols = [col.text.strip() for col in table.find_all("th")]
+AttributeError: 'NoneType' object has no attribute 'find_all'
 ```
+
 
 
 ## Short description of the script sections
@@ -120,7 +131,8 @@ The results are written to csv files in the present working directory. In line w
 - ~~remove df_data_removed et al. from script~~
 - ~~rename plot function~~
 - ~~check that all functions have docstrings~~
-- rename scripts to poll_tracker.py and tools_poll_tracker.py and adjust documentation!
+- ~~rename scripts to poll_tracker.py and tools_poll_tracker.py and adjust documentation!~~
+- put log with url error in readme -> better for demonstration purposes
 
 
 
