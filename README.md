@@ -119,7 +119,8 @@ The results are written to csv files in the present working directory. In line w
 - test virtualenv on windows and linux
 - ~~remove df_data_removed et al. from script~~
 - ~~rename plot function~~
-- check that all functions have docstrings
+- ~~check that all functions have docstrings~~
+- rename scripts to poll_tracker.py and tools_poll_tracker.py and adjust documentation!
 
 
 
