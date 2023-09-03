@@ -61,13 +61,13 @@ AttributeError: 'NoneType' object has no attribute 'find_all'
 
 ## Short description of what the script does
 
-### Scrape url 
+### Scrape content from url 
 
-The script scrapes the table from the url containing the polling data as well as the content and the markers of the footnotes at the bottom of the table. 
+The script scrapes the table containing the polling data as well as the content and the markers of the footnotes at the bottom of the table. 
 
 ### Parse data
 
-After scraping the table from the url, all footnote markers, e.g. `'*'` are removed and the (string) values in the columns of the table converted to the appropriate data types: 
+All footnote markers, e.g. `'*'` are removed and the (string) values in the columns of the table converted to the appropriate data types: 
 
 | Column     | Type       |
 |------------|------------|
