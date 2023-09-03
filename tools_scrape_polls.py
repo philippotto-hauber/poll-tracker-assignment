@@ -74,7 +74,6 @@ def parse_data(df_rawdata, names_candidates_and_others, footnotes, lims_sum_shar
 
     # remove polls that could not be parsed 
     all_na = df_data.loc[:, names_candidates_and_others].isna().all(axis=1)
-    df_polls_not_parsed = df_data.loc[all_na, :]
     if sum(all_na) > 0:
         logging.warning('Excluded {} row(s) because vote shares could not be converted to floats'.format(all_na.sum()))
     df_data = df_data.loc[~all_na, :]
@@ -82,7 +81,6 @@ def parse_data(df_rawdata, names_candidates_and_others, footnotes, lims_sum_shar
     # remove polls whose vote shares differs from 1 by more than a given margin
     sum_shares = df_data.loc[:, names_candidates_and_others].sum(axis=1)
     drop_row = (sum_shares < lims_sum_shares[0]) | (sum_shares > lims_sum_shares[1])
-    df_data_excluded = df_data.loc[drop_row, :] 
     if sum(drop_row) > 0:
         logging.warning('Excluded {} poll(s) because the sum of vote shares was smaller (larger) than {} ({}).'.format(drop_row.sum(), lims_sum_shares[0], lims_sum_shares[1]))
     df_data = df_data.loc[~drop_row, :]
