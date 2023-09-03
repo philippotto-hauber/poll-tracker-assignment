@@ -2,8 +2,6 @@
 from tools_scrape_polls import *
 import sys
 
-#%% settings
-url = 'https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html'
 
 #%% set up logging
 logging.basicConfig(filename = "log_scrape_polls.log", 
@@ -19,7 +17,7 @@ error_msg = 'Script terminated with error! Check log file for details.'
 #%% scrape table and footnotes from website
 
 try:
-    df_rawdata, footnotes = scrape_table_and_footnotes(url)
+    df_rawdata, footnotes = scrape_table_and_footnotes()
     logging.info("Sucessfully scraped content from url!")
 except Exception as e:
     logging.error(e, exc_info=True)

@@ -4,7 +4,7 @@ import pandas as pd
 import re
 import logging
 
-def scrape_table_and_footnotes(url):
+def scrape_table_and_footnotes(url = 'https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html'):
     """Scrape html table and footnotes
 
     Parameters:
@@ -39,7 +39,7 @@ def scrape_table_and_footnotes(url):
     
     return df_rawdata, footnotes
 
-def parse_data(df_rawdata, names_candidates_and_others, footnotes, lims_sum_shares = [0.98, 1.02]):
+def parse_data(df_rawdata, names_candidates_and_others, footnotes, lims_sum_shares = [0.985, 1.015]):
     """Parse poll results from html table
 
     Parameters:
@@ -125,7 +125,7 @@ def calculate_trends(df_data,
 
 def export_dfs_to_csv(df_data, df_trends):
     """Export dataframes to csv"""
-    
+
     # bring columns in line with the example files
     df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
     df_trends.index.name = 'date'
