@@ -7,7 +7,7 @@ This repo contains a script to scrape, clean and aggregate poll data from this [
 
 ### Running the script
 
-The main script can be run from the command line without any parameters. It relies on only a few external packages to scrape the url (`requests`, `bs4`) as well as `pandas` (version 1.2.0!) for data handling. These need to be installed in a virtual environment prior to execution. 
+The main script can be run directly from the command line without any input arguments. The arguments to the functions used in the script are either generated in preceding sections or have sensible defaults. It relies on only a few external packages to scrape the url (`requests`, `bs4`) as well as `pandas` (version 1.2.0!) for data handling. These need to be installed in a virtual environment prior to execution. 
 
 To create the virtual environment and install the necessary packages, run the following commands (depending on the operating system):
 
@@ -56,7 +56,7 @@ The script scrapes the table from the url containing the polling data as well as
 
 ### Parse data
 
-After scraping the table from the url, all footnoes are removed from the rows and the string values in the columns are converted to the appropriate data types. 
+After scraping the table from the url, all footnote markers, e.g. `'*'` are removed and the (string) values in the columns converted to the appropriate data types: 
 
 | Column     | Type       |
 |------------|------------|
@@ -72,7 +72,9 @@ After scraping the table from the url, all footnoes are removed from the rows an
 
 The script should be able to parse the (string) vote shares as floats. For example `'30'`, `'30.6'`, `'30,6'`, `'30.6%'` or typos like `'30.6$'` are all converted to `30.0` or `30.6`, respectively. However, if the conversion fails for some reason, the script does not raise an exception. Instead, vote shares that could not be parsed are set to `NaN` and in a subsequent step, polls for which all vote shares are `NaN` are dropped from the analysis and a warning is issued. 
 
-The script also checks - accounting for rounding errors -  if the vote shares approximately sum to 1. This should catch potential data entry errors. An example is the poll by Policy Voice Polling on November 18th, 2023 where the reported vote share for the candidate Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1, suggesting a data entry error. Such polls are removed and a warning issued. Note that this approach will also catch any polls where the vote shares of some but not all candidates could not be parsed as floats! 
+The script also checks if the vote shares approximately sum to 1.[^sum_vote_share] This should catch potential data entry errors. An example is the poll by *Policy Voice Polling* on November 18th, 2023 where the reported vote share for the candidate Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1, suggesting a data entry error. Such polls are removed and a warning issued. Note that this approach will also catch any polls where the vote shares of some but not all candidates could be converted to floats! 
+
+[^sum_vote_share]: Because of rounding errors the sum of vote shares may not sum exactly to 1. I therefore only discard a poll if it lies outside a pre-specified range. Based on the observed sum of shares up until March 25, 2024 the default for this range  in the code is [0.985-1.015] which includes some larger rounding errors from polls by *DemocracyMeter* and *Civic Pulse* who report the percent vote shares without decimal places. 
 
 ### Calculate trends
 
