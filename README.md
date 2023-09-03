@@ -41,7 +41,7 @@ To illustrate the logging and error handling, I ran the script with a typo in th
 Script terminated with error! Check log file for details.
 ```
 
-and the log file contains an initial `WARNING` as well as the `ERROR` with the traceback:
+and the log file contains an initial `WARNING` and then the `ERROR` including the traceback:
 
 ```bash
 2023-09-03 12:53:39,128 INFO: Begin execution
