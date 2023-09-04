@@ -81,11 +81,9 @@ All footnote markers, e.g. `'*'` are removed and the (string) values in the colu
 
 The script should be able to parse the (string) vote shares as floats. For example `'30'`, `'30.6'`, `'30,6'`, `'30.6%'` or typos like `'30.6$'` are all converted to `30.0` or `30.6`, respectively. However, if the conversion fails for some reason, the script does not raise an exception. Instead, vote shares that could not be parsed are set to `NaN` and in a subsequent step, polls for which all vote shares are `NaN` are dropped from the analysis and a warning is issued. 
 
-To catch potential data entry errors, the script also checks the sum of the vote shares. An example is the poll by *Policy Voice Polling* on November 18th, 2023 where the reported vote share for the candidate Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1, suggesting a data entry error. Such polls are removed and a warning issued. Note that this approach will also catch any polls where the vote shares of some but not all candidates could be converted to floats.
+The script also checks the sum of the vote shares to catch potential data entry errors. An example is the poll by *Policy Voice Polling* on November 18th, 2023 where the reported vote share for the candidate Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1, suggesting a data entry error. Such polls are removed and a warning issued. Note that this approach will also catch any polls where the vote shares of some but not all candidates could be converted to floats.
 
 However, because of rounding errors the vote shares may not exactly sum to 1. I therefore only discard a poll if the sum of vote shares lies outside a pre-specified range. Based on the observed values up until March 25, 2024 the default for this range in the code is [0.985-1.015] which still includes larger rounding errors from polls by *DemocracyMeter* and *Civic Pulse* who report the percent vote shares without decimal places. 
-
-[^sum_vote_share]: 
 
 ### Calculate trends
 
