@@ -1,7 +1,7 @@
 # poll-tracker-assignment
 
 ## Overview
-This repo contains a script to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `poll_tracker.py` which loads functions defined in `tools_poll_tracker.py` to perform the individual steps of the analysis. The outputs are two csv files: `polls.csv` and `trends.csv`. 
+This repo contains code to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `poll_tracker.py` which loads functions defined in `tools_poll_tracker.py` to perform the individual steps of the analysis. The outputs are two csv files: `polls.csv` and `trends.csv`. 
 
 ## Preliminaries
 
@@ -23,7 +23,7 @@ virtualenv venv # assumes that virtualenv is installed and added to path
 venv\Scripts\activate
 pip install -r requirements.txt
 ```
-Examples: WSL, Raspbian 
+**Note**: when testing the portability of the script to Linux, creating the virtual environment and installing the few necessary packages took a surprisingly long time (~12 min).
 
 ### Logging and error handling
 
@@ -41,7 +41,7 @@ To illustrate the logging and error handling, I ran the script with a typo in th
 Script terminated with error! Check log file for details.
 ```
 
-and the log file contains an initial `WARNING` that something is up with the html-file and then the code crashes when it tries to scrape the content of the url, yielding an `ERROR` including the traceback:
+and the log file contains an initial `WARNING` that something is up with the html file and then the code crashes when it tries to find all the table headers, yielding an `ERROR` including the traceback:
 
 ```
 2023-09-03 12:53:39,128 INFO: Begin execution
@@ -57,9 +57,7 @@ Traceback (most recent call last):
 AttributeError: 'NoneType' object has no attribute 'find_all'
 ```
 
-
-
-## Short description of what the script does
+## Short description of what `poll_tracker.py` does
 
 ### Scrape content from url 
 
@@ -83,9 +81,11 @@ All footnote markers, e.g. `'*'` are removed and the (string) values in the colu
 
 The script should be able to parse the (string) vote shares as floats. For example `'30'`, `'30.6'`, `'30,6'`, `'30.6%'` or typos like `'30.6$'` are all converted to `30.0` or `30.6`, respectively. However, if the conversion fails for some reason, the script does not raise an exception. Instead, vote shares that could not be parsed are set to `NaN` and in a subsequent step, polls for which all vote shares are `NaN` are dropped from the analysis and a warning is issued. 
 
-The script also checks if the vote shares approximately sum to 1.[^sum_vote_share] This should catch potential data entry errors. An example is the poll by *Policy Voice Polling* on November 18th, 2023 where the reported vote share for the candidate Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1, suggesting a data entry error. Such polls are removed and a warning issued. Note that this approach will also catch any polls where the vote shares of some but not all candidates could be converted to floats! 
+To catch potential data entry errors, the script also checks the sum of the vote shares. An example is the poll by *Policy Voice Polling* on November 18th, 2023 where the reported vote share for the candidate Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1, suggesting a data entry error. Such polls are removed and a warning issued. Note that this approach will also catch any polls where the vote shares of some but not all candidates could be converted to floats.
 
-[^sum_vote_share]: Because of rounding errors the sum of vote shares may not sum exactly to 1. I therefore only discard a poll if it lies outside a pre-specified range. Based on the observed sum of shares up until March 25, 2024 the default for this range  in the code is [0.985-1.015] which includes some larger rounding errors from polls by *DemocracyMeter* and *Civic Pulse* who report the percent vote shares without decimal places. 
+However, because of rounding errors the vote shares may not exactly sum to 1. I therefore only discard a poll if the sum of vote shares lies outside a pre-specified range. Based on the observed values up until March 25, 2024 the default for this range in the code is [0.985-1.015] which still includes larger rounding errors from polls by *DemocracyMeter* and *Civic Pulse* who report the percent vote shares without decimal places. 
+
+[^sum_vote_share]: 
 
 ### Calculate trends
 
@@ -95,10 +95,11 @@ With polling data up to March 25, 2024 the trends for the five candidates look l
 
 ![Figure: trends](./plots/plot_trends.png)
 
+To ensure that the trend vote shares sum to 1, I calculate the trend of `Others` (if present in the data) as 1 minus the trends of the candidates.
+
 ### Export to csv
 
 The results are written to csv files in the present working directory. In line with the example files provided, the trends (polls) are in (reverse) chronological order. 
-
 
 ## To do
 
@@ -120,14 +121,15 @@ The results are written to csv files in the present working directory. In line w
 - ~~check that trend has only one obs per day -> resample('1D') method~~
 - ~~inclusive filter when converting shares to numeric~~
 - ~~handle warnings in logger -> currently written to console!~~
-- html tests
+- ~~html tests~~
+- further html tests (see README on tests branch)
 - ~~short docu of steps in README~~
 - ~~only keep packages necessary for running scraper in requirements.txt, i.e. no matplotlib and jupyter~~
 - pandas has to be version 1.2.0!
 - ~~adjust message when aborting script~~
 - ~~remove option pad for trend~~
 - ~~figure of sum of shares -> decided against it~~
-- test virtualenv on windows and linux
+- ~~test virtualenv on windows and linux~~
 - ~~remove df_data_removed et al. from script~~
 - ~~rename plot function~~
 - ~~check that all functions have docstrings~~
