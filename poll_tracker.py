@@ -31,10 +31,10 @@ names_candidates_and_others = [col for col in df_rawdata.columns if col not in [
 
 #%% parse data
 try:
-    df_data = parse_data(df_rawdata, 
-                    names_candidates_and_others, 
-                    footnotes, 
-                    lims_sum_shares = [0.98, 1.02])
+    df_polls = parse_data(df_rawdata, 
+                          names_candidates_and_others, 
+                          footnotes, 
+                          lims_sum_shares = [0.98, 1.02])
     logging.info('Sucessfully parsed data!')
 except Exception as e:
     logging.error(e, exc_info=True)
@@ -43,7 +43,7 @@ except Exception as e:
 
 #%% calculate trends
 try:
-    df_trends = calculate_trends(df_data, 
+    df_trends = calculate_trends(df_polls, 
                                  names_candidates,
                                  k_days= '7D',
                                  method_interpolate='linear')
@@ -56,7 +56,7 @@ except Exception as e:
 #%% export to csv
 
 try:
-    export_dfs_to_csv(df_data, df_trends)
+    export_dfs_to_csv(df_polls, df_trends)
     logging.info('Successfully exported polls and trends to csv.')
 except Exception as e:
     logging.error(e, exc_info=True)

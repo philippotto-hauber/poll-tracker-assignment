@@ -49,52 +49,52 @@ def parse_data(df_rawdata, names_candidates_and_others, footnotes, lims_sum_shar
     lims_sum_shares (list) : lower and upper limit for sum of vote shares to determine if poll should be removed
 
     Returns:
-    df_data (DataFrame)   : contains date of poll, pollster, sample size, vote shares in different formats (e.g. datetime, floats)
+    df_polls (DataFrame)   : contains date of poll, pollster, sample size, vote shares in different formats (e.g. datetime, floats)
     """
     
-    df_data = df_rawdata.copy()
+    df_polls = df_rawdata.copy()
 
     # remove footnotes
     for f in footnotes.keys():
-        for col in df_data.columns:
+        for col in df_polls.columns:
             # according to docu default is False, but without explicitly setting it to False encountered regex error!
-            df_data[col] = df_data[col].str.replace(f, '', regex=False) 
+            df_polls[col] = df_polls[col].str.replace(f, '', regex=False) 
 
     # convert string columns to appropriate types
-    df_data['Date'] = pd.to_datetime(df_data['Date'])
+    df_polls['Date'] = pd.to_datetime(df_polls['Date'])
 
-    df_data['Sample'] = pd.to_numeric(df_data['Sample'].str.replace(',', '')).astype('Int64') # replacing , if possible; float to int
+    df_polls['Sample'] = pd.to_numeric(df_polls['Sample'].str.replace(',', '')).astype('Int64') # replacing , if possible; float to int
 
     pat = re.compile(r"[0-9\.,]+")
 
-    for col in df_data.columns:
+    for col in df_polls.columns:
         if col in names_candidates_and_others:
             # convert vote shares to numeric, removing any non-numeric characters except ',' or '.
-            df_data[col] = pd.to_numeric(df_data[col].str.findall(pat).str.join(''), errors = 'coerce') / 100.0
+            df_polls[col] = pd.to_numeric(df_polls[col].str.findall(pat).str.join(''), errors = 'coerce') / 100.0
 
     # remove polls that could not be parsed 
-    all_na = df_data.loc[:, names_candidates_and_others].isna().all(axis=1)
+    all_na = df_polls.loc[:, names_candidates_and_others].isna().all(axis=1)
     if sum(all_na) > 0:
         logging.warning('Excluded {} poll(s) because vote shares could not be converted to floats'.format(all_na.sum()))
-    df_data = df_data.loc[~all_na, :]
+    df_polls = df_polls.loc[~all_na, :]
 
     # remove polls whose vote shares differs from 1 by more than a given margin
-    sum_shares = df_data.loc[:, names_candidates_and_others].sum(axis=1)
+    sum_shares = df_polls.loc[:, names_candidates_and_others].sum(axis=1)
     drop_row = (sum_shares < lims_sum_shares[0]) | (sum_shares > lims_sum_shares[1])
     if sum(drop_row) > 0:
         logging.warning('Excluded {} poll(s) because the sum of vote shares was smaller (larger) than {} ({}).'.format(drop_row.sum(), lims_sum_shares[0], lims_sum_shares[1]))
-    df_data = df_data.loc[~drop_row, :]
+    df_polls = df_polls.loc[~drop_row, :]
 
-    return df_data
+    return df_polls
 
-def calculate_trends(df_data, 
+def calculate_trends(df_polls, 
                      names_candidates, 
                      k_days = '7D', 
                      method_interpolate = 'linear'):
     """Calculate trend vote shares based on poll results
 
     Parameters:
-    df_data (DataFrame)     : contains poll results
+    df_polls (DataFrame)     : contains poll results
     names_candidates (list) : List of candidates in the election
     k_days (str)            : rolling average window in days
     method_interpolate (str): method for interpolation of missing values
@@ -103,8 +103,8 @@ def calculate_trends(df_data,
     df_trends (DataFrame)   : contains trend vote shares (columns) over time (rows)
 
    """
-    # resample df_data to daily frequency taking the mean over days
-    df_trends = df_data.set_index('Date').resample('D').mean()
+    # resample df_polls to daily frequency taking the mean over days
+    df_trends = df_polls.set_index('Date').resample('D').mean()
 
     # 'Sample' is not needed for the trend calculations
     df_trends = df_trends.drop(columns=['Sample'])
@@ -124,14 +124,14 @@ def calculate_trends(df_data,
 
     return df_trends
 
-def export_dfs_to_csv(df_data, df_trends):
+def export_dfs_to_csv(df_polls, df_trends):
     """Export dataframes to csv"""
 
     # bring columns in line with the example files
-    df_data = df_data.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
+    df_polls = df_polls.rename(columns={'Date': 'date', 'Pollster': 'pollster', 'Sample': 'n'})
     df_trends.index.name = 'date'
 
     # write to csv
-    df_data.to_csv('./polls.csv', index=False)
+    df_polls.to_csv('./polls.csv', index=False)
     df_trends.to_csv('./trends.csv', index=True) # date is index!
 
