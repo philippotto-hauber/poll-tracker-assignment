@@ -1,7 +1,7 @@
 # poll-tracker-assignment
 
 ## Overview
-This repo contains code to scrape, clean and aggregate poll data from this [url](https://cdn-dev.economistdatateam.com/jobs/pds/code-test/index.html). The main script is `poll_tracker.py` which loads functions defined in `tools_poll_tracker.py` to perform the individual steps of the analysis. The outputs are two csv files: `polls.csv` and `trends.csv`. 
+This repo contains code to scrape, clean and aggregate polling data. The main script is `poll_tracker.py` which loads functions defined in `tools_poll_tracker.py` to perform the individual steps of the analysis. The outputs are two csv files: `polls.csv` and `trends.csv`. 
 
 ## Preliminaries
 
@@ -16,7 +16,7 @@ The arguments to the functions used in the script are either generated in preced
 
 To create the virtual environment and install the necessary packages, run the following commands (depending on the operating system):
 
-Linux/macOS(?)
+Linux(/macOS?)
 ```
 virtualenv venv # assumes that virtualenv is installed and added to path
 source venv/bin/activate
@@ -34,19 +34,19 @@ pip install -r requirements.txt
 
 The script uses Python's `logging` module to log messages to file. These include `INFO` messages whenever a section of the code has been completed successfully. 
 
-When polls are removed because of data irregularities (see below), a `WARNING` is written to the log file. Non-expected warnings are also re-routed to the log file rather than the console. 
+When polls are removed because of data irregularities (see below), a `WARNING` is written to the log file. Non-expected warnings are also re-routed to the log file rather than printed to the console. 
 
 Each code section is excecuted in a "try and except"-block and any exceptions including tracebacks are written as `ERROR` to the log file. The execution of the script is then interrupted to avoid follow-on errors.
 
 Only the result of the execution - success or error - is printed to the console with a reminder to check the log file for details. 
 
-To illustrate the logging and error handling, I ran the script with a typo in the url. The console output looks like this:
+To illustrate the logging and error handling, I ran the script with a typo in the url. The resulting console output looks like this:
 
 ```
 Script terminated with error! Check log file for details.
 ```
 
-and the log file contains an initial `WARNING` that something is up with the html file and then the code crashes when it tries to find all the table headers, yielding an `ERROR`:
+and the log file `log_polltracker.log` contains an initial `WARNING` that something is up with the html file and an `ERROR` when the code actually crashes:
 
 ```
 2023-09-03 12:53:39,128 INFO: Begin execution
@@ -88,7 +88,7 @@ When parsing the vote shares, the script can handle a variety of (string) format
 
 The script also checks the sum of the vote shares to catch potential data entry errors. An example is the poll by *Policy Voice Polling* on November 18th, 2023 where the reported vote share for the candidate Bulstrode suddenly jumps to over 0.6. The sum of vote shares for this poll is well over 1, suggesting a data entry error. Such polls are removed and a warning issued. Note that this approach will also catch any polls where the vote shares of some but not all candidates could be converted to floats.
 
-Because of rounding errors, however, the vote shares may not exactly sum to 1. I therefore only discard a poll if the sum of vote shares lies outside a pre-specified range. Based on the observed values up until March 25, 2024 the default for this range in the code is [0.985-1.015]. This range does not discard polls with larger rounding errors from *DemocracyMeter* and *Civic Pulse* who report the percent vote shares without decimal places. 
+Because of rounding errors, however, the vote shares may not exactly sum to 1. I therefore only discard a poll if the sum of vote shares lies outside a pre-specified range. Based on the observed values up until March 25, 2024 the default for this range in the code is [0.985-1.015]. This range is large enough so as not to discard polls with larger rounding errors from *DemocracyMeter* and *Civic Pulse* who report the percent vote shares without decimal places. 
 
 ### Calculate trends
 
