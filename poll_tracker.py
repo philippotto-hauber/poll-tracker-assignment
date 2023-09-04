@@ -4,7 +4,7 @@ import sys
 
 
 #%% set up logging
-logging.basicConfig(filename = "log_scrape_polls.log", 
+logging.basicConfig(filename = "log_polltracker.log", 
                     level = logging.INFO,
                     format = '%(asctime)s %(levelname)s: %(message)s',
                     filemode = 'w')
