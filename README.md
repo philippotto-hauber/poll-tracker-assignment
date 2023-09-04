@@ -7,7 +7,12 @@ This repo contains code to scrape, clean and aggregate poll data from this [url]
 
 ### Running the script
 
-The main script can be run directly from the command line without any input arguments. The arguments to the functions used in the script are either generated in preceding sections or have sensible defaults. It relies on only a few external packages to scrape the url (`requests`, `bs4`) as well as `pandas` (version 1.2.0!) for data handling. These need to be installed in a virtual environment prior to execution. 
+The main script can be run directly from the command line without any input arguments, e.g. on Windows
+
+```
+python poll_tracker.py
+``` 
+The arguments to the functions used in the script are either generated in preceding sections or have sensible defaults. It relies on only a few external packages to scrape the url (`requests`, `bs4`) as well as `pandas` (version 1.2.0!) for data handling. These need to be installed in a virtual environment prior to execution. 
 
 To create the virtual environment and install the necessary packages, run the following commands (depending on the operating system):
 
@@ -41,7 +46,7 @@ To illustrate the logging and error handling, I ran the script with a typo in th
 Script terminated with error! Check log file for details.
 ```
 
-and the log file contains an initial `WARNING` that something is up with the html file and then the code crashes when it tries to find all the table headers, yielding an `ERROR` including the traceback:
+and the log file contains an initial `WARNING` that something is up with the html file and then the code crashes when it tries to find all the table headers, yielding an `ERROR`:
 
 ```
 2023-09-03 12:53:39,128 INFO: Begin execution
